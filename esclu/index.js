@@ -5,6 +5,16 @@ const request = require('request');
 const program = require('commander');
 const pkg = require('./package.json');
 
+const fullUrl = (path = '') => {
+	let url = `http://${program.host}:${program.port}/`;
+	if (program.index) {
+		url += program.index + '/';
+		if (program.type) {
+			url += program.type + '/';
+		}
+	}
+	return url + path.replace(/^\/*/, '');
+}
 program
 	.version(pkg.version)
 	.description(pkg.description)
@@ -15,11 +25,14 @@ program
 	.option('-i, --index <name>', 'which index to use')
 	.option('-t, --type <type>', 'default type for bulk operation');
 
+program
+	.command('url [path]')
+	.description('generate the URL for the option and path (defalt is /)')
+	.action((path = '/') => console.log(fullUrl(path)));
+
 program.parse(process.argv);
 
 if (!program.args.filter(arg => typeof arg === 'object').length) {
 	program.help();
 }
-
-
 
