@@ -15,6 +15,7 @@ const fullUrl = (path = '') => {
 	}
 	return url + path.replace(/^\/*/, '');
 }
+
 program
 	.version(pkg.version)
 	.description(pkg.description)
@@ -29,6 +30,24 @@ program
 	.command('url [path]')
 	.description('generate the URL for the option and path (defalt is /)')
 	.action((path = '/') => console.log(fullUrl(path)));
+
+program
+	.command('get [path]')
+	.description('perform an HTTP GET request for path (default is /')
+	.action((path = '/') => {
+		const options = {
+			url: fullUrl(path),
+			json: program.json,
+		};
+		request(options, (err, res, body) => {
+			if (program.json) {
+				console.log(JSON.stringify(err || body));
+			} else {
+				if (err) throw err;
+				console.log(body);
+			}
+		});
+	});
 
 program.parse(process.argv);
 
