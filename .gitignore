@@ -1,6 +1,6 @@
-// Editor files
+# Editor files
 *.swp
 
-// Data files
+# Data files
 data/
 data/cache/

@@ -11,6 +11,9 @@ const fullUrl = (path = '') => {
 		url += program.index + '/';
 		if (program.type) {
 			url += program.type + '/';
+			if (program.id) {
+				url += program.id + '/';
+			}
 		}
 	}
 	return url + path.replace(/^\/*/, '');
@@ -34,7 +37,8 @@ program
 	.option('-j, --json', 'format output as JSON')
 	.option('-i, --index <name>', 'which index to use')
 	.option('-t, --type <type>', 'default type for bulk operation')
-	.option('-f, --filter <filter>', 'source filter for query results');
+	.option('-f, --filter <filter>', 'source filter for query results')
+	.option('--id <id>', 'assign an id to an input');
 
 program
 	.command('url [path]')
@@ -84,7 +88,7 @@ program
 
 program
 	.command('bulk <file>')
-	.description('read and perform buld options from the specified file')
+	.description('read and perform build options from the specified file')
 	.action(file => {
 		fs.stat(file, (err, stats) => {
 			if (err) { 
@@ -106,8 +110,8 @@ program
 		const stream = fs.createReadStream(file);
 		stream.pipe(req);
 		req.pipe(process.stdout);
+		});
 	});
-});
 
 program
 	.command('query [queries...]')
@@ -127,6 +131,34 @@ program
 		}
 		request(options, handleResponse);
 	});
+
+// TODO finish put
+//program
+	//.command('put <file>')
+	//.description('perform an HTTP PUT request for the specified file')
+	//.action(file => {
+		//fs.stat(file, (err, stats) => {
+			//if (err) {
+				//if (program.json) {
+					//console.log(JSON.strigify(err));
+					//return;
+				//}
+				//throw err;
+			//}
+			//const options = {
+				//url: fullUrl('_put'),
+				//json: true,
+				//headers: {
+					//'content-length': stats.size,
+					//'content-type': 'application/json'
+				//}
+			//};
+		//const req = request.put(options);
+		//const stream = fs.createWriteStream(file);
+		//req.pipe(stream);
+		//req.pipe(process.stdout);
+		//});
+//	});
 
 program.parse(process.argv);
 
