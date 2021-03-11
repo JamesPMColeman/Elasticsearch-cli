@@ -4,3 +4,4 @@
 # Data files
 data/
 data/cache/
+node_modules/
